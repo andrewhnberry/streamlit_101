@@ -2,23 +2,36 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-st.title('Uber pickups in NYC')
-
-DATE_COLUMN = 'date/time'
-DATA_URL = ('https://s3-us-west-2.amazonaws.com/'
-            'streamlit-demo-data/uber-raw-data-sep14.csv.gz')
+#Custom Functions
+#----------------------
 
 @st.cache
-def load_data(nrows):
-    data = pd.read_csv(DATA_URL, nrows=nrows)
-    lowercase = lambda x: str(x).lower()
-    data.rename(lowercase, axis='columns', inplace=True)
-    data[DATE_COLUMN] = pd.to_datetime(data[DATE_COLUMN])
+def load_data(location):
+    data = pd.read_csv(location)
     return data
 
-data_load_state = st.text('Loading data...')
-data = load_data(10000)
-data_load_state.text("Done! (using st.cache)")
+#Page Design
+#-----------------------
+#Title
+st.title('Toronto Daily Shelter Occupancy Rate')
+
+st.write('Let us take a quick look into the Daily Shelter Occupancy Rate in Toronto')
+
+data_path = 'data/to_shelter_occupancy_2020.csv'
+df = load_data(data_path)
+
+#Show Data
+st.dataframe(df)
+
+cols = ['OCCUPANCY_DATE','SECTOR','CAPACITY', 'OCCUPANCY']
+st_ms = st.multiselect("Columns", df.columns.tolist(),default = cols)
+
+
+
+
+
+
+
 
 if st.checkbox('Show raw data'):
     st.subheader('Raw data')
